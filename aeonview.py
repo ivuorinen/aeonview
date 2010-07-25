@@ -6,12 +6,12 @@ def aeonview(argv):
 	parser = optparse.OptionParser(
 		usage='Usage: %prog [options]',
 		description="aeonview for timelapses",
-		version="%prog 0.1.20100718"
+        version="%prog 0.1"
 	)
 	
 	basicopts = optparse.OptionGroup(parser,
 							"Basic settings",
-	                    	"These effect in both modes.")					
+	                    	"These effect in both modes.")
 	basicopts.add_option(	"-m", "--mode",
 							default="image",
 							help="run mode: image or video [default: %default]")
@@ -26,16 +26,16 @@ def aeonview(argv):
 							dest="path" )
 	parser.add_option_group(basicopts)
 	
-	# When mode is: image 
+	# When mode is: image
 	imageopts = optparse.OptionGroup(parser, "Options for --mode: image",
-	                    "When we are gathering images.")					
+	                    "When we are gathering images.")
 	imageopts.add_option(	'-u', '--url',
 							help="Webcam URL",
 							type="string")
 	parser.add_option_group(imageopts)
 	
 	
-	# When mode is: video 
+	# When mode is: video
 	videoopts = optparse.OptionGroup(parser, "Options for --mode: video",
 	                    "When we are making movies.")
 	videoopts.add_option(	'-g', '--generate',
@@ -79,37 +79,37 @@ def aeonview(argv):
 		if options.url == None and options.simulate == True:
 			options.url = "http://example.com/webcam.jpg"
 			print "(!) Simulation: Using " + options.url + " as webcam url"
-	    
+		
 		if options.url == None:
 			print "(!) Need a webcam url, not gonna rock before that!"
 			print
 			parser.print_help()
 			sys.exit(-1)
-	    
+		
 		if options.project == None:
 			import hashlib # not needed before
 			m = hashlib.md5(options.url).hexdigest()
 			options.project = m[:5] # 5 first characters of md5-hash
 			if options.verbose == True or options.simulate == True:
 				print "(!) No project defined, using part of md5-hash of the webcam url:", options.project
-	    
+		
 		if options.path == None or options.path == ".":
 			if options.verbose == True or options.simulate == True:
 				print "(!) No destination defined, using:", options.path
 		else:
 			if options.verbose == True or options.simulate == True:
 				print "(!) Using destination:", options.path
-	    
+		
 		# If you want to change the path structure, here's your chance.
 		options.imgpath = time.strftime("/img/%Y-%m/%d/")
 		options.imgname = time.strftime("%H-%M-%S")
-	    
+		
 		# Let us build the destination path and filename
 		options.fileext 	= os.path.splitext(options.url)[1]
 		options.destdir 	= options.path + "/" + options.project + options.imgpath
 		options.destination = options.destdir + options.imgname + options.fileext
 		getit = options.url + " > " + options.destination
-	    
+		
 		# Crude, but works.
 		if options.simulate == False:
 			mkdir_p( options.destdir )
@@ -118,7 +118,7 @@ def aeonview(argv):
 			print "(!) Simulation: Making path:", options.destdir
 			print "(!) Simulation: curl", getit
 			#print options
-	    
+	
 	elif options.mode == 'video':
 		# We are now in the video producing mode
 		
@@ -150,18 +150,20 @@ def aeonview(argv):
 				    os.system(command)
 				else:
 				    print "(!) Video dir to process:", video_dir
-				    print "(!) Video output-file: ", video_out_day
+				    print "(!) Video output-file:", video_out_day
+				    print "(!) Made directory structure:", video_out_dir
 				    print "(!) Command to run", command
-				    				
+			
 			else:
 				print "(!) Error: check your date. Value provided:", options.generate
 		
 		elif options.videorun == "monthly":
 			print "Monthly"
+			# TODO Monthly script. Joins daily movies of that month
 		
 		else:
 			print "(!) What? Please choose between -r daily/montly"
-		
+	
 	else:
 		parser.print_help()
 		sys.exit(-1)
