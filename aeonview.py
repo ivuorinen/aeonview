@@ -2,11 +2,18 @@
 import sys, time, datetime, os, optparse, errno
 
 def aeonview(argv):
-	"""Basic settings and configurations for aeonview"""
+	"""
+	aeonview is a tool for automagical timelapse-video generation.
+	it works as a glue between different linux programs to produce
+	videos of elapsing time. works best with webcam-images from the net.
+	"""
+	
+	__author = "Ismo Vuorinen (ivuorinen@gmail.com)"
+	
 	parser = optparse.OptionParser(
 		usage='Usage: %prog [options]',
 		description="aeonview for timelapses",
-        version="%prog 0.1"
+        version="%prog 0.1.($Revision$)"
 	)
 	
 	basicopts = optparse.OptionGroup(parser,
