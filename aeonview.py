@@ -1,5 +1,5 @@
 # $Id$
-import sys, time, datetime, os, optparse, errno
+import sys, time, datetime, os, optparse, errno, re
 
 def aeonview(argv):
 	"""
@@ -8,12 +8,13 @@ def aeonview(argv):
 	videos of elapsing time. works best with webcam-images from the net.
 	"""
 	
-	__author = "Ismo Vuorinen (ivuorinen@gmail.com)"
+	__rev       = re.search('([0-9]+)', '$Revision$')
+	__author    = "Ismo Vuorinen (ivuorinen@gmail.com)"
 	
 	parser = optparse.OptionParser(
 		usage='Usage: %prog [options]',
 		description="aeonview for timelapses",
-        version="%prog 0.1.($Revision$)"
+        version="%prog 0.1."+str(__rev)
 	)
 	
 	basicopts = optparse.OptionGroup(parser,
@@ -174,6 +175,7 @@ def aeonview(argv):
 	else:
 		parser.print_help()
 		sys.exit(-1)
+	
 
 
 
