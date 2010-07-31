@@ -7,14 +7,12 @@ def aeonview(argv):
 	it works as a glue between different linux programs to produce
 	videos of elapsing time. works best with webcam-images from the net.
 	"""
-	
-	__rev       = re.search('([0-9]+)', '$Revision$')
-	__author    = "Ismo Vuorinen (ivuorinen@gmail.com)"
+	version = re.search('([0-9]+)', '$Revision$')
 	
 	parser = optparse.OptionParser(
 		usage='Usage: %prog [options]',
 		description="aeonview for timelapses",
-        version="%prog 0.1."+str(__rev)
+        version="%prog 0.1."+version.group(0)
 	)
 	
 	basicopts = optparse.OptionGroup(parser,
@@ -27,8 +25,8 @@ def aeonview(argv):
 							help="Project name, used as directory name. "
 								"Defaults to 5 characters from md5 hash of the webcam url.",
 							type="string" )
-	basicopts.add_option(	'-d', '--destination',
-							help="Start of the path. [default: %default]",
+	basicopts.add_option(	'--dest',
+							help="Start of the destination. [default: %default]",
 							type="string",
 							default=".",
 							dest="path" )
@@ -37,7 +35,7 @@ def aeonview(argv):
 	# When mode is: image
 	imageopts = optparse.OptionGroup(parser, "Options for --mode: image",
 	                    "When we are gathering images.")
-	imageopts.add_option(	'-u', '--url',
+	imageopts.add_option(	'--url',
 							help="Webcam URL",
 							type="string")
 	parser.add_option_group(imageopts)
@@ -46,16 +44,22 @@ def aeonview(argv):
 	# When mode is: video
 	videoopts = optparse.OptionGroup(parser, "Options for --mode: video",
 	                    "When we are making movies.")
-	videoopts.add_option(	'-g', '--generate',
+	videoopts.add_option(	'--videorun',
+							default="daily",
+							help="Video to process: daily or monthly [default: %default]",
+							type="string")
+  	videoopts.add_option(	'--gen-day',
 							help="Date to video. Format: YYYY-MM-DD. "
 								"Default is calculated yesterday, currently %default",
 							type="string",
 							default=datetime.date.today()-datetime.timedelta(1) )
-	videoopts.add_option(	'-r', '--videorun',
-							default="daily",
-							help="Video to process: daily or monthly [default: %default]",
-							type="string")
-	videoopts.add_option(   '-f', '--fps',
+  	# TODO: mode for monthly videos
+  	#videoopts.add_option(	'--gen-month',
+	#						help="Month to video. Format: YYYY-MM. "
+	#							"Default is last month, currently %default",
+	#						type="string",
+	#						default=datetime.date.today()-datetime.timedelta(30) )
+	videoopts.add_option(   '--fps',
 	                        default="10",
 	                        help="Frames per second, numeric [default: %default]",
 	                        type="int")
