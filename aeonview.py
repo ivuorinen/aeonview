@@ -124,8 +124,8 @@ def aeonview(argv):
 		
 		# Crude, but works.
 		if options.simulate == False:
-			mkdir_p( options.destdir )
-			os.system('curl --silent %s' % getit)
+			#mkdir_p( options.destdir )
+			os.system('curl --create-dirs --silent %s' % getit)
 		else:
 			print "(!) Simulation: Making path:", options.destdir
 			print "(!) Simulation: curl", getit
@@ -185,13 +185,13 @@ def aeonview(argv):
 
 
 # http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python/600612#600612
-def mkdir_p(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc: # Python >2.5
-        if exc.errno == errno.EEXIST:
-            pass
-        else: raise
+#def mkdir_p(path):
+#    try:
+#        os.makedirs(path)
+#    except OSError as exc: # Python >2.5
+#        if exc.errno == errno.EEXIST:
+#            pass
+#        else: raise
 
 
 # Modified http://markmail.org/message/k2pxsle2lslrmnut
