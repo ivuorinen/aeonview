@@ -84,6 +84,9 @@ def aeonview(argv):
 		print
 		print "(!) You are running aeonview from", os.getcwdu(),  "as the user", os.getlogin()
 	
+	if options.path == ".":
+	    options.path = os.path.realpath(".")
+    
 	
 	if options.mode == 'image':
 		# We are now in the gathering mode.
@@ -107,7 +110,7 @@ def aeonview(argv):
 		
 		if options.path == None or options.path == ".":
 			if options.verbose == True or options.simulate == True:
-				print "(!) No destination defined, using:", options.path
+			    print "(!) No destination defined, using:", options.path
 		else:
 			if options.verbose == True or options.simulate == True:
 				print "(!) Using destination:", options.path
@@ -118,9 +121,13 @@ def aeonview(argv):
 		
 		# Let us build the destination path and filename
 		options.fileext 	= os.path.splitext(options.url)[1]
+		
+		#if options.fileext not in ['jpg', 'png', 'gif']:
+		#    options.fileext = "jpg"
+		
 		options.destdir 	= options.path + "/" + options.project + options.imgpath
 		options.destination = options.destdir + options.imgname + options.fileext
-		getit = options.url + " > " + options.destination
+		getit = '"' + options.url + '" > "' + options.destination + '"'
 		
 		# Crude, but works.
 		if options.simulate == False:
