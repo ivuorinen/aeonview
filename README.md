@@ -10,8 +10,9 @@ sample:
 
 
 Needed components:
-- Python
-- curl
-- mencoder
-- lots of harddrive space
-- cron
+
+*   Python
+*   curl
+*   mencoder
+*   lots of harddrive space
+*   cron
