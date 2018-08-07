@@ -1,4 +1,3 @@
-# $Id$
 import sys, time, datetime, os, optparse, errno, re
 
 def aeonview(argv):
@@ -7,86 +6,93 @@ def aeonview(argv):
 	it works as a glue between different linux programs to produce
 	videos of elapsing time. works best with webcam-images from the net.
 	"""
-	version = re.search('([0-9]+)', '$Revision$')
+	version = "0.1.8"
 	
 	parser = optparse.OptionParser(
-		usage='Usage: %prog [options]',
+		usage="Usage: %prog [options]",
 		description="aeonview for timelapses",
-        version="%prog 0.1."+version.group(0)
+        version="%prog v"+version
 	)
 	
-	basicopts = optparse.OptionGroup(parser,
-							"Basic settings",
-	                    	"These effect in both modes.")
-	basicopts.add_option(	"-m", "--mode",
-							default="image",
-							help="run mode: image or video [default: %default]")
-	basicopts.add_option(  '-p', '--project',
-							help="Project name, used as directory name. "
-								"Defaults to 5 characters from md5 hash of the webcam url.",
-							type="string" )
-	basicopts.add_option(	'--dest',
-							help="Start of the destination. [default: %default]",
-							type="string",
-							default=".",
-							dest="path" )
+	basicopts = optparse.OptionGroup(
+		parser, "Basic settings", "These effect in both modes."
+	)
+
+	basicopts.add_option("-m", "--mode",
+		default="image",
+		help="run mode: image or video [default: %default]")
+
+	basicopts.add_option("-p", "--project",
+		help="Project name, used as directory name. "
+		"Defaults to 5 characters from md5 hash of the webcam url.",
+		type="string")
+
+	basicopts.add_option("-d", "--dest",
+		help="Start of the destination. [default: %default]",
+		type="string",
+		default=os.getcwdu()+"/projects",
+		dest="path")
+
+	basicopts.add_option("--mencoder",
+		help="Path to mencoder binary. [default: %default]",
+		type="string",
+		default=os.getcwdu()+'/mencoder')
+
 	parser.add_option_group(basicopts)
 	
 	# When mode is: image
-	imageopts = optparse.OptionGroup(parser, "Options for --mode: image",
-	                    "When we are gathering images.")
-	imageopts.add_option(	'--url',
-							help="Webcam URL",
-							type="string")
+	imageopts = optparse.OptionGroup(
+		parser, "Options for --mode: image", "When we are gathering images.")
+
+	imageopts.add_option("--url", help="Webcam URL", type="string")
+
 	parser.add_option_group(imageopts)
 	
 	
 	# When mode is: video
-	videoopts = optparse.OptionGroup(parser, "Options for --mode: video",
-	                    "When we are making movies.")
-	videoopts.add_option(	'--videorun',
-							default="daily",
-							help="Video to process: daily or monthly [default: %default]",
-							type="string")
-  	videoopts.add_option(	'--gen-day',
-							help="Date to video. Format: YYYY-MM-DD. "
-								"Default is calculated yesterday, currently %default",
-							type="string",
-							default=datetime.date.today()-datetime.timedelta(1) )
-  	# TODO: mode for monthly videos
-  	#videoopts.add_option(	'--gen-month',
-	#						help="Month to video. Format: YYYY-MM. "
-	#							"Default is last month, currently %default",
-	#						type="string",
-	#						default=datetime.date.today()-datetime.timedelta(30) )
-	videoopts.add_option(   '--fps',
-	                        default="10",
-	                        help="Frames per second, numeric [default: %default]",
-	                        type="int")
+	videoopts = optparse.OptionGroup(parser,
+		"Options for --mode: video", "When we are making movies.")
+
+	videoopts.add_option("--videorun",
+		default="daily",
+		help="Video to process: daily, monthly or yearly [default: %default]",
+		type="string")
+  	videoopts.add_option('--generate',
+		help="Date to video. Format: YYYY-MM-DD. "
+			"Default is calculated yesterday, currently %default",
+		type="string",
+		default=datetime.date.today()-datetime.timedelta(1))
+
+ 	# TODO: mode for monthly videos
+  #videoopts.add_option("--gen-month",
+	#	help="Month to video. Format: YYYY-MM. "
+	#		"Default is last month, currently %default",
+	#	type="string",
+	#	default=datetime.date.today()-datetime.timedelta(30))
+
+	videoopts.add_option("--fps",
+		default="10",
+		help="Frames per second, numeric [default: %default]",
+		type="int")
+
 	parser.add_option_group(videoopts)
-	
-	
+
 	parser.add_option("-v", help="Verbose", action="store_true", dest="verbose", default=False)
 	parser.add_option("-q", help="Quiet", action="store_false", dest="verbose", default=True)
 	
-	parser.add_option( 		'-s', '--simulate',
-							help="Demostrates what will happen "
-								"(good for checking your settings and destinations)",
-							default=False,
-							action="store_true" )
-	
-	
+	parser.add_option("-s", "--simulate",
+			help="Demostrates what will happen (good for checking your settings and destinations)",
+			default=False,
+			action="store_true")
+
 	(options, args) = parser.parse_args(argv[1:])
 	
 	if options.simulate == True:
 		print
 		print "--- Starting simulation, just echoing steps using your parameters."
 		print
-		print "(!) You are running aeonview from", os.getcwdu(),  "as the user", os.getlogin()
+		print "(!) You are running aeonview from", os.getcwdu()
 	
-	if options.path == ".":
-	    options.path = os.path.realpath(".")
-    
 	
 	if options.mode == 'image':
 		# We are now in the gathering mode.
@@ -108,9 +114,9 @@ def aeonview(argv):
 			if options.verbose == True or options.simulate == True:
 				print "(!) No project defined, using part of md5-hash of the webcam url:", options.project
 		
-		if options.path == None or options.path == ".":
+		if options.path == None:
 			if options.verbose == True or options.simulate == True:
-			    print "(!) No destination defined, using:", options.path
+				print "(!) No destination defined, using:", options.path
 		else:
 			if options.verbose == True or options.simulate == True:
 				print "(!) Using destination:", options.path
@@ -120,30 +126,25 @@ def aeonview(argv):
 		options.imgname = time.strftime("%H-%M-%S")
 		
 		# Let us build the destination path and filename
-		options.fileext 	= os.path.splitext(options.url)[1]
-		
-		#if options.fileext not in ['jpg', 'png', 'gif']:
-		#    options.fileext = "jpg"
-		
-		options.destdir 	= options.path + "/" + options.project + options.imgpath
+		options.fileext     = os.path.splitext(options.url)[1]
+		options.destdir     = options.path + "/" + options.project + options.imgpath
 		options.destination = options.destdir + options.imgname + options.fileext
-		getit = '"' + options.url + '" > "' + options.destination + '"'
+		getit 							= options.url + " -o " + options.destination
 		
 		# Crude, but works.
 		if options.simulate == False:
-			#mkdir_p( options.destdir )
-			os.system('curl --create-dirs --silent %s' % getit)
+			os.system("curl --create-dirs --silent %s" % getit)
 		else:
 			print "(!) Simulation: Making path:", options.destdir
-			print "(!) Simulation: curl", getit
-			#print options
+			print "(!) Simulation: curl (--create-dirs and --silent)", getit
 	
-	elif options.mode == 'video':
+	elif options.mode == "video":
 		# We are now in the video producing mode
 		
 		vid_extension = ".avi"
-		m = os.getcwd() + "/mencoder"
-		mencoder = m + " -mf fps="+ str(options.fps) +" -nosound -ovc lavc -lavcopts vcodec=mpeg4"
+		#m = os.getcwd() + "/mencoder"
+		m = options.mencoder
+		mencoder = m + " -really-quiet -mf fps="+ str(options.fps) +" -nosound -ovc lavc -lavcopts vcodec=mpeg4"
 		
 		if options.project == None:
 			print "(!) No project defined, please specify what project you are working on."
@@ -153,16 +154,18 @@ def aeonview(argv):
 		
 		
 		if options.videorun == "daily":
-			vid_date = str(options.generate).split( "-" )
-			year 	= vid_date[0]
-			month 	= vid_date[1]
-			day 	= vid_date[2]
+			vid_date 	= str(options.generate).split("-")
+			year	 		= vid_date[0]
+			month		 	= vid_date[1]
+			day	 			= vid_date[2]
 			
 			if check_date(int(year), int(month), int(day)):
-				video_dir = options.path+"/"+options.project+"/img/"+year+"-"+month+"/"+day+"/*"
-				video_out_dir = options.path +"/"+ options.project +"/vid/"+ year +"-"+ month +"/"
+				proj_dir 			= options.path + "/" + options.project
+				video_dir 		= proj_dir + "/img/" + year + "-" + month + "/" + day + "/*"
+				video_out_dir = proj_dir + "/vid/" + year + "-" + month + "/"
 				video_out_day = video_out_dir + day + vid_extension
-				command = mencoder + " -o " + video_out_day + " 'mf://"+os.path.dirname( os.path.realpath( video_dir ) ) + "/*'"
+				mfdir 				= os.path.dirname(os.path.realpath(video_dir))
+				command 			= mencoder + " -o " + video_out_day + " 'mf://" + mfdir + "/*'"
 				
 				if options.simulate == False:
 				    mkdir_p( video_out_dir )
@@ -177,28 +180,29 @@ def aeonview(argv):
 				print "(!) Error: check your date. Value provided:", options.generate
 		
 		elif options.videorun == "monthly":
-			print "Monthly"
-			# TODO Monthly script. Joins daily movies of that month
+			print "Monthly: TODO"
+			# TODO Monthly script. Joins daily movies of that month.
+
+		elif options.videorun == "yearly":
+			print "Yearly: TODO"
+			# TODO Yearly script. Joins monthly movies together.
 		
 		else:
-			print "(!) What? Please choose between -r daily/montly"
+			print "(!) What? Please choose between -r daily/montly/yearly"
 	
 	else:
 		parser.print_help()
 		sys.exit(-1)
 	
 
-
-
-
 # http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python/600612#600612
-#def mkdir_p(path):
-#    try:
-#        os.makedirs(path)
-#    except OSError as exc: # Python >2.5
-#        if exc.errno == errno.EEXIST:
-#            pass
-#        else: raise
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST:
+            pass
+        else: raise
 
 
 # Modified http://markmail.org/message/k2pxsle2lslrmnut
