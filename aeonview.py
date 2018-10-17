@@ -11,7 +11,7 @@ def aeonview(argv):
 	parser = optparse.OptionParser(
 		usage="Usage: %prog [options]",
 		description="aeonview for timelapses",
-        version="%prog v"+version
+		version="%prog v"+version
 	)
 
 	basicopts = optparse.OptionGroup(
@@ -56,14 +56,15 @@ def aeonview(argv):
 		default="daily",
 		help="Video to process: daily, monthly or yearly [default: %default]",
 		type="string")
-  	videoopts.add_option('--generate',
+
+	videoopts.add_option('--generate',
 		help="Date to video. Format: YYYY-MM-DD. "
 			"Default is calculated yesterday, currently %default",
 		type="string",
 		default=datetime.date.today()-datetime.timedelta(1))
 
  	# TODO: mode for monthly videos
-  #videoopts.add_option("--gen-month",
+	#videoopts.add_option("--gen-month",
 	#	help="Month to video. Format: YYYY-MM. "
 	#		"Default is last month, currently %default",
 	#	type="string",
@@ -80,9 +81,9 @@ def aeonview(argv):
 	parser.add_option("-q", help="Quiet", action="store_false", dest="verbose", default=True)
 
 	parser.add_option("-s", "--simulate",
-			help="Demostrates what will happen (good for checking your settings and destinations)",
-			default=False,
-			action="store_true")
+		help="Demostrates what will happen (good for checking your settings and destinations)",
+		default=False,
+		action="store_true")
 
 	(options, args) = parser.parse_args(argv[1:])
 
@@ -124,10 +125,10 @@ def aeonview(argv):
 		options.imgname = time.strftime("%H-%M-%S")
 
 		# Let us build the destination path and filename
-		options.fileext     = os.path.splitext(options.url)[1]
-		options.destdir     = options.path + "/" + options.project + options.imgpath
+		options.fileext = os.path.splitext(options.url)[1]
+		options.destdir = options.path + "/" + options.project + options.imgpath
 		options.destination = options.destdir + options.imgname + options.fileext
-		getit 							= options.url + " -o " + options.destination
+		getit = options.url + " -o " + options.destination
 
 		# Crude, but works.
 		if options.simulate == False:
@@ -151,27 +152,27 @@ def aeonview(argv):
 			sys.exit(-1)
 
 		if options.videorun == "daily":
-			vid_date 	= str(options.generate).split("-")
-			year	 		= vid_date[0]
-			month		 	= vid_date[1]
-			day	 			= vid_date[2]
+			vid_date = str(options.generate).split("-")
+			year = vid_date[0]
+			month = vid_date[1]
+			day = vid_date[2]
 
 			if check_date(int(year), int(month), int(day)):
-				proj_dir 			= options.path + "/" + options.project
-				video_dir 		= proj_dir + "/img/" + year + "-" + month + "/" + day + "/*"
+				proj_dir = options.path + "/" + options.project
+				video_dir = proj_dir + "/img/" + year + "-" + month + "/" + day + "/*"
 				video_out_dir = proj_dir + "/vid/" + year + "-" + month + "/"
 				video_out_day = video_out_dir + day + vid_extension
-				mfdir 				= os.path.dirname(os.path.realpath(video_dir))
-				command 			= mencoder + " -o " + video_out_day + " 'mf://" + mfdir + "/*'"
+				mfdir = os.path.dirname(os.path.realpath(video_dir))
+				command = mencoder + " -o " + video_out_day + " 'mf://" + mfdir + "/*'"
 
 				if options.simulate == False:
-				    mkdir_p( video_out_dir )
-				    os.system(command)
+					mkdir_p( video_out_dir )
+					os.system(command)
 				else:
-				    print "(!) Video dir to process:", video_dir
-				    print "(!) Video output-file:", video_out_day
-				    print "(!) Made directory structure:", video_out_dir
-				    print "(!) Command to run", command
+					print "(!) Video dir to process:", video_dir
+					print "(!) Video output-file:", video_out_day
+					print "(!) Made directory structure:", video_out_dir
+					print "(!) Command to run", command
 
 			else:
 				print "(!) Error: check your date. Value provided:", options.generate
@@ -194,12 +195,12 @@ def aeonview(argv):
 
 # http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python/600612#600612
 def mkdir_p(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc: # Python >2.5
-        if exc.errno == errno.EEXIST:
-            pass
-        else: raise
+	try:
+		os.makedirs(path)
+	except OSError as exc: # Python >2.5
+		if exc.errno == errno.EEXIST:
+			pass
+		else: raise
 
 
 # Modified http://markmail.org/message/k2pxsle2lslrmnut
