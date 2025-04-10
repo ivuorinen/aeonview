@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: PR Lint
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+permissions: read-all
+
+env:
+  TRIVY_SEVERITY: CRITICAL,HIGH
+  DISABLE_LINTERS: GO_GOLANGCI_LINT
+
+jobs:
+  Linter:
+    name: PR Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # only for delete-branch option
+      issues: write
+      pull-requests: write
+      statuses: write
+
+    steps:
+      - uses: ivuorinen/actions/pr-lint@312c00f77fbd73948441c8b004607e098e40c97f # 25.4.8

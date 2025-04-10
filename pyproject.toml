@@ -1,0 +1,24 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "C4", "T20"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = ["S101"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["."]
+python_files = ["*_test.py"]
+
+[tool.pylint.MAIN]
+ignore-patterns='^\.#'
+ignore-paths='^\.#'
+ignore='CVS,.venv'
+disable='attribute-defined-outside-init,invalid-name,missing-docstring,protected-access,too-few-public-methods,format'
