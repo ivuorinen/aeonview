@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>ivuorinen/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "managers": [
+        "github-actions"
+      ],
+      "schedule": [
+        "daily"
+      ]
+    }
+  ]
+}

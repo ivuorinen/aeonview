@@ -1,3 +1,8 @@
 projects/*
 !projects/.gitkeep
 .vscode
+.pytest_cache
+__pycache__
+.coverage
+.ruff_cache
+.venv
