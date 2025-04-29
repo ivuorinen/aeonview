@@ -13,14 +13,14 @@ import requests
 # Define messages for logging
 # These messages are used for logging purposes and can be customized as needed.
 class AeonViewMessages:
-    INVALID_URL = 'Invalid URL provided.'
-    INVALID_DATE = 'Invalid date format provided.'
-    DOWNLOAD_SUCCESS = 'Image downloaded successfully.'
-    DOWNLOAD_FAILURE = 'Failed to download image.'
-    VIDEO_GENERATION_SUCCESS = 'Video generated successfully.'
-    VIDEO_GENERATION_FAILURE = 'Failed to generate video.'
-    INVALID_IMAGE_FORMAT = 'Invalid image format provided.'
-    INVALID_IMAGE_EXTENSION = 'Invalid image extension provided.'
+    INVALID_URL = "Invalid URL provided."
+    INVALID_DATE = "Invalid date format provided."
+    DOWNLOAD_SUCCESS = "Image downloaded successfully."
+    DOWNLOAD_FAILURE = "Failed to download image."
+    VIDEO_GENERATION_SUCCESS = "Video generated successfully."
+    VIDEO_GENERATION_FAILURE = "Failed to generate video."
+    INVALID_IMAGE_FORMAT = "Invalid image format provided."
+    INVALID_IMAGE_EXTENSION = "Invalid image extension provided."
 
 
 class AeonViewImages:
@@ -58,53 +58,56 @@ class AeonViewImages:
         if not isinstance(date, datetime):
             logging.error(AeonViewMessages.INVALID_DATE)
             sys.exit(1)
-        if not url.startswith('http'):
+        if not url.startswith("http"):
             logging.error(AeonViewMessages.INVALID_URL)
             sys.exit(1)
-        if not url.endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
+        if not url.endswith((".jpg", ".jpeg", ".png", ".gif", ".webp")):
             logging.error(AeonViewMessages.INVALID_IMAGE_FORMAT)
             sys.exit(1)
 
         if destination_base is None:
-            logging.error('No destination base path provided.')
+            logging.error("No destination base path provided.")
             sys.exit(1)
         if not isinstance(destination_base, Path):
-            logging.error('Invalid destination base path.')
+            logging.error("Invalid destination base path.")
             sys.exit(1)
 
-        year = date.strftime('%Y')
-        month = date.strftime('%m')
-        day = date.strftime('%d')
+        year = date.strftime("%Y")
+        month = date.strftime("%m")
+        day = date.strftime("%d")
 
-        year_month = f'{year}-{month}'
+        year_month = f"{year}-{month}"
 
-        destination = AeonViewHelpers.build_path(destination_base, year_month, day)
-        file_name = date.strftime('%H-%M-%S') + AeonViewHelpers.get_extension(url)
+        destination = AeonViewHelpers.build_path(
+            destination_base, year_month, day
+        )
+        extension = AeonViewHelpers.get_extension(url) or ""
+        file_name = date.strftime("%H-%M-%S") + extension
         destination_file = AeonViewHelpers.build_path(destination, file_name)
 
         if not destination.exists():
-            if self.args.simulate:
-                logging.info(f'Simulate: would create {destination}')
+            if self.args.get("simulate", False):
+                logging.info("Simulate: would create %s", destination)
             else:
                 AeonViewHelpers.mkdir_p(destination)
-                logging.info(f'Creating destination base path: {destination}')
+                logging.info("Creating destination base path: %s", destination)
 
         return {
-            'url': url,
-            'file': file_name,
-            'date': {
-                'year': year,
-                'month': month,
-                'day': day,
-                'hour': date.strftime('%H'),
-                'minute': date.strftime('%M'),
-                'second': date.strftime('%S'),
+            "url": url,
+            "file": file_name,
+            "date": {
+                "year": year,
+                "month": month,
+                "day": day,
+                "hour": date.strftime("%H"),
+                "minute": date.strftime("%M"),
+                "second": date.strftime("%S"),
             },
-            'destinations': {
-                'base': destination_base,
-                'year_month': year_month,
-                'day': day,
-                'file': destination_file,
+            "destinations": {
+                "base": destination_base,
+                "year_month": year_month,
+                "day": day,
+                "file": destination_file,
             },
         }
 
@@ -113,17 +116,19 @@ class AeonViewImages:
         Download the image from the URL and save it to the project directory.
         """
 
-        if self.args.date is not None:
+        date_param = self.args.get("date", None)
+
+        if date_param is not None:
             try:
-                date = datetime.strptime(self.args.date, '%Y-%m-%d %H:%M:%S')
+                date = datetime.strptime(date_param, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 logging.error(AeonViewMessages.INVALID_DATE)
                 sys.exit(1)
         else:
             date = datetime.now()
 
-        img_path = date.strftime('img/%Y-%m/%d')
-        img_name = date.strftime('%H-%M-%S')
+        img_path = date.strftime("img/%Y-%m/%d")
+        img_name = date.strftime("%H-%M-%S")
 
         if self.url is None:
             logging.error(AeonViewMessages.INVALID_URL)
@@ -132,16 +137,20 @@ class AeonViewImages:
         file_ext = AeonViewHelpers.get_extension(self.url)
 
         dest_dir = AeonViewHelpers.build_path(self.project_path, img_path)
-        dest_file = AeonViewHelpers.build_path(dest_dir, f'{img_name}{file_ext}')
+        dest_file = AeonViewHelpers.build_path(
+            dest_dir, f"{img_name}{file_ext}"
+        )
 
-        logging.info(f'Saving image to {dest_file}')
+        logging.info("Saving image to %s", dest_file)
 
-        if not self.args.simulate:
+        if not self.args.get("simulate", False):
             AeonViewHelpers.mkdir_p(dest_dir)
             self.download_image(dest_file)
         else:
-            logging.info(f'Simulate: would create {dest_dir}')
-            logging.info(f'Simulate: would download {self.url} to {dest_file}')
+            logging.info("Simulate: would create %s", dest_dir)
+            logging.info(
+                "Simulate: would download %s to %s", self.url, dest_file
+            )
 
     def download_image(self, destination: Path):
         """
@@ -155,22 +164,31 @@ class AeonViewImages:
             sys.exit(1)
 
         if not isinstance(destination, Path):
-            logging.error('Invalid destination path.')
+            logging.error("Invalid destination path.")
             sys.exit(1)
 
-        if self.args.simulate is False or self.args.simulate is None:
-            logging.info(f'Downloading image from {self.url}')
-            response = requests.get(self.url, stream=True)
+        if (
+            self.args.get("simulate", False) is False
+            or self.args.get("simulate", None) is None
+        ):
+            logging.info("Downloading image from %s", self.url)
+            response = requests.get(self.url, stream=True, timeout=10)
             if response.status_code == 200:
-                with open(destination, 'wb') as f:
+                with open(destination, "wb") as f:
                     for chunk in response.iter_content(1024):
                         f.write(chunk)
-                logging.info(f'{AeonViewMessages.DOWNLOAD_SUCCESS}: {destination}')
+                logging.info(
+                    "%s: %s", AeonViewMessages.DOWNLOAD_SUCCESS, destination
+                )
             else:
-                logging.error(f'{AeonViewMessages.DOWNLOAD_FAILURE}: {self.url}')
+                logging.error(
+                    "%s: %s", AeonViewMessages.DOWNLOAD_FAILURE, self.url
+                )
                 sys.exit(1)
         else:
-            logging.info(f'Simulate: would download {self.url} to {destination}')
+            logging.info(
+                "Simulate: would download %s to %s", self.url, destination
+            )
 
 
 class AeonViewVideos:
@@ -181,48 +199,58 @@ class AeonViewVideos:
     It uses ffmpeg for video processing.
     """
 
-    def __init__(self, project_path: Path, args=None):
+    def __init__(
+        self, project_path: Path, args: argparse.Namespace | None = None
+    ):
         """
         Initialize the AeonViewVideos class.
         :param project_path: Path to the project directory
         :param args: Command line arguments passed to the class
         """
         self.project_path = project_path
-        self.args = args or {}
+        self.args = args
 
-        self.args.simulate = args.simulate or False
-        self.args.fps = args.fps or 10
+        self.args["simulate"] = (
+            args.get("simulate", False) if isinstance(args, dict) else False
+        )
+        self.args["fps"] = args.get("fps", 10) if isinstance(args, dict) else 10
 
-        self.day = args.day or None
-        self.month = args.month or None
-        self.year = args.year or None
+        self.day = args.get("day", None) if args else None
+        self.month = args.get("month", None) if args else None
+        self.year = args.get("year", None) if args else None
 
-        self.path_images = AeonViewHelpers.build_path(self.project_path, 'img')
-        self.path_videos = AeonViewHelpers.build_path(self.project_path, 'vid')
+        self.path_images = AeonViewHelpers.build_path(self.project_path, "img")
+        self.path_videos = AeonViewHelpers.build_path(self.project_path, "vid")
 
     def generate_daily_video(self):
         """
         Generate a daily video from images.
         """
 
-        year_month = f'{self.year}-{self.month}'
+        year_month = f"{self.year}-{self.month}"
 
-        input_dir = AeonViewHelpers.build_path(self.path_videos, year_month, self.day)
+        input_dir = AeonViewHelpers.build_path(
+            self.path_videos, year_month, self.day
+        )
         output_dir = AeonViewHelpers.build_path(self.path_videos, year_month)
-        output_file = AeonViewHelpers.build_path(output_dir, f'{self.day}.mp4')
-        ffmpeg_cmd = AeonViewHelpers.generate_ffmpeg_command(input_dir, output_file, self.args.fps)
+        output_file = AeonViewHelpers.build_path(output_dir, f"{self.day}.mp4")
+        ffmpeg_cmd = AeonViewHelpers.generate_ffmpeg_command(
+            input_dir, output_file, self.args.fps
+        )
 
-        logging.info(f'Generating video from {input_dir}')
-        logging.info(f'Output file will be {output_file}')
+        logging.info("Generating video from %s", input_dir)
+        logging.info("Output file will be %s", output_file)
 
-        if not self.args.simulate:
-            logging.info(f'Running ffmpeg command: {" ".join(ffmpeg_cmd)}')
+        if not self.args.get("simulate", False):
+            logging.info("Running ffmpeg command: %s", " ".join(ffmpeg_cmd))
             if not os.path.exists(input_dir):
                 AeonViewHelpers.mkdir_p(output_dir)
             subprocess.run(ffmpeg_cmd, check=True)
-            logging.info(f'{AeonViewMessages.VIDEO_GENERATION_SUCCESS}: {output_file}')
+            logging.info(
+                "%s: %s", AeonViewMessages.VIDEO_GENERATION_SUCCESS, output_file
+            )
         else:
-            logging.info(f'Simulate: would run {" ".join(ffmpeg_cmd)}')
+            logging.info("Simulate: would run %s", " ".join(ffmpeg_cmd))
 
     def generate_monthly_video(self, output_dir: Path):
         """
@@ -230,7 +258,9 @@ class AeonViewVideos:
         :param output_dir: Directory where the video will be saved
         :return: None
         """
-        raise NotImplementedError('Monthly video generation is not implemented.')
+        raise NotImplementedError(
+            "Monthly video generation is not implemented."
+        )
 
     def generate_yearly_video(self, output_dir: Path):
         """
@@ -238,7 +268,7 @@ class AeonViewVideos:
         :param output_dir: Directory where the video will be saved
         :return: None
         """
-        raise NotImplementedError('Yearly video generation is not implemented.')
+        raise NotImplementedError("Yearly video generation is not implemented.")
 
 
 class AeonViewHelpers:
@@ -284,20 +314,45 @@ class AeonViewHelpers:
     def parse_arguments():
         """Parse command line arguments."""
 
-        dest_default = str(Path.cwd() / 'projects')
+        dest_default = str(Path.cwd() / "projects")
 
-        parser = argparse.ArgumentParser(description='aeonview - timelapse generator using ffmpeg')
-        parser.add_argument('--mode', choices=['image', 'video'], default='image', help='Run mode')
-        parser.add_argument('--project', help='Project name', default='default')
-        parser.add_argument('--dest', default=dest_default, help='Destination root path')
-        parser.add_argument('--url', help='Webcam URL (required in image mode)')
-        parser.add_argument('--fps', type=int, default=10, help='Frames per second')
-        parser.add_argument('--generate', help='Date for video generation (YYYY-MM-DD)')
-        parser.add_argument('--timeframe', choices=['daily', 'monthly', 'yearly'], default='daily')
-        parser.add_argument(
-            '--simulate', action='store_true', help='Simulation mode', default=False
+        parser = argparse.ArgumentParser(
+            description="aeonview - timelapse generator using ffmpeg"
         )
-        parser.add_argument('--verbose', action='store_true', help='Verbose output', default=False)
+        parser.add_argument(
+            "--mode",
+            choices=["image", "video"],
+            default="image",
+            help="Run mode",
+        )
+        parser.add_argument("--project", help="Project name", default="default")
+        parser.add_argument(
+            "--dest", default=dest_default, help="Destination root path"
+        )
+        parser.add_argument("--url", help="Webcam URL (required in image mode)")
+        parser.add_argument(
+            "--fps", type=int, default=10, help="Frames per second"
+        )
+        parser.add_argument(
+            "--generate", help="Date for video generation (YYYY-MM-DD)"
+        )
+        parser.add_argument(
+            "--timeframe",
+            choices=["daily", "monthly", "yearly"],
+            default="daily",
+        )
+        parser.add_argument(
+            "--simulate",
+            action="store_true",
+            help="Simulation mode",
+            default=False,
+        )
+        parser.add_argument(
+            "--verbose",
+            action="store_true",
+            help="Verbose output",
+            default=False,
+        )
         args = parser.parse_args()
         return args, parser
 
@@ -311,14 +366,14 @@ class AeonViewHelpers:
             logging.error(AeonViewMessages.INVALID_IMAGE_EXTENSION)
             return None
 
-        if url.endswith('.png'):
-            return '.png'
-        elif url.endswith('.gif'):
-            return '.gif'
-        elif url.endswith('.webp'):
-            return '.webp'
+        if url.endswith(".png"):
+            return ".png"
+        elif url.endswith(".gif"):
+            return ".gif"
+        elif url.endswith(".webp"):
+            return ".webp"
         else:
-            return '.jpg'
+            return ".jpg"
 
     @staticmethod
     def setup_logger(verbose: bool):
@@ -328,10 +383,12 @@ class AeonViewHelpers:
         :return: None
         """
         level = logging.DEBUG if verbose else logging.INFO
-        logging.basicConfig(level=level, format='[%(levelname)s] %(message)s')
+        logging.basicConfig(level=level, format="[%(levelname)s] %(message)s")
 
     @staticmethod
-    def generate_ffmpeg_command(input_dir: Path, output_file: Path, fps: int = 10) -> list:
+    def generate_ffmpeg_command(
+        input_dir: Path, output_file: Path, fps: int = 10
+    ) -> list:
         """
         Generate the ffmpeg command to create a video from images.
         :param input_dir: Directory containing the images
@@ -340,17 +397,17 @@ class AeonViewHelpers:
         :return: Newly created ffmpeg command as a list
         """
         return [
-            'ffmpeg',
-            '-framerate',
+            "ffmpeg",
+            "-framerate",
             str(fps),
-            '-pattern_type',
-            'glob',
-            '-i',
-            str(input_dir / '*.{jpg,jpeg,png,gif,webp}'),
-            '-c:v',
-            'libx264',
-            '-pix_fmt',
-            'yuv420p',
+            "-pattern_type",
+            "glob",
+            "-i",
+            str(input_dir / "*.{jpg,jpeg,png,gif,webp}"),
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
             str(output_file),
         ]
 
@@ -370,11 +427,11 @@ class AeonViewApp:
         Execute the application based on the provided arguments.
         """
         if self.args.simulate:
-            logging.info('Simulation mode active. No actions will be executed.')
+            logging.info("Simulation mode active. No actions will be executed.")
 
-        if self.args.mode == 'image':
+        if self.args.mode == "image":
             self.process_image()
-        elif self.args.mode == 'video':
+        elif self.args.mode == "video":
             self.process_video()
 
     def process_image(self):
@@ -382,18 +439,20 @@ class AeonViewApp:
         Process image download and saving based on the provided arguments.
         """
         if not self.args.url or self.args.url is None:
-            logging.error('--url is required in image mode')
+            logging.error("--url is required in image mode")
             self.parser.print_help()
             sys.exit(1)
 
-        if not isinstance(self.args.url, str) or not self.args.url.startswith('http'):
-            logging.error(f'{AeonViewMessages.INVALID_URL}: {self.args.url}')
+        if not isinstance(self.args.url, str) or not self.args.url.startswith(
+            "http"
+        ):
+            logging.error("%s: %s", AeonViewMessages.INVALID_URL, self.args.url)
             sys.exit(1)
 
         url = self.args.url
-        project = self.args.project or 'default'
+        project = self.args.project or "default"
 
-        if project == 'default' and url:
+        if project == "default" and url:
             project = hashlib.md5(url.encode()).hexdigest()[:5]
 
         project_path = AeonViewHelpers.build_path(self.base_path, project)
@@ -405,23 +464,25 @@ class AeonViewApp:
         Process video generation based on the provided arguments.
         """
         if not self.args.project:
-            logging.error('--project is required in video mode')
+            logging.error("--project is required in video mode")
             self.parser.print_help()
             sys.exit(1)
 
         if not isinstance(self.args.project, str):
-            logging.error(f'Invalid project name: {self.args.project}')
+            logging.error("Invalid project name: %s", self.args.project)
             sys.exit(1)
 
-        project_path = AeonViewHelpers.build_path(self.base_path, self.args.project)
+        project_path = AeonViewHelpers.build_path(
+            self.base_path, self.args.project
+        )
 
         if not os.path.exists(project_path):
-            logging.error(f'Project path {project_path} does not exist.')
+            logging.error("Project path %s does not exist.", project_path)
             sys.exit(1)
 
         try:
             generate_date = (
-                datetime.strptime(self.args.generate, '%Y-%m-%d')
+                datetime.strptime(self.args.generate, "%Y-%m-%d")
                 if self.args.generate
                 else datetime.today() - timedelta(days=1)
             )
@@ -429,31 +490,33 @@ class AeonViewApp:
             logging.error(AeonViewMessages.INVALID_DATE)
             sys.exit(1)
 
-        year = generate_date.strftime('%Y')
-        month = generate_date.strftime('%m')
-        day = generate_date.strftime('%d')
+        year = generate_date.strftime("%Y")
+        month = generate_date.strftime("%m")
+        day = generate_date.strftime("%d")
 
         self.args.day = day
         self.args.month = month
         self.args.year = year
 
         if not AeonViewHelpers.check_date(int(year), int(month), int(day)):
-            logging.error(f'Invalid date: {year}-{month}-{day}')
+            logging.error("Invalid date: %s-%s-%s", year, month, day)
             sys.exit(1)
 
-        avm = AeonViewVideos(project_path, self.args)
+        avm = AeonViewVideos(project_path, vars(self.args))
 
-        if self.args.timeframe == 'daily':
+        if self.args.timeframe == "daily":
             avm.generate_daily_video()
-        elif self.args.timeframe == 'monthly':
-            output_dir = AeonViewHelpers.build_path(project_path, 'vid', f'{year}-{month}')
+        elif self.args.timeframe == "monthly":
+            output_dir = AeonViewHelpers.build_path(
+                project_path, "vid", f"{year}-{month}"
+            )
             avm.generate_monthly_video(output_dir)
-        elif self.args.timeframe == 'yearly':
-            output_dir = AeonViewHelpers.build_path(project_path, 'vid', year)
+        elif self.args.timeframe == "yearly":
+            output_dir = AeonViewHelpers.build_path(project_path, "vid", year)
             avm.generate_yearly_video(output_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = AeonViewApp()
     app.run()
 
