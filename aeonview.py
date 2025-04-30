@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import hashlib
 import logging
@@ -41,6 +43,7 @@ class AeonViewImages:
         self.project_path = project_path or None
         self.url = url or None
         self.args = args or {}
+        self.simulate = getattr(args, "simulate", False)
 
     def get_image_paths(
         self, url: str | None, destination_base: Path | None, date: datetime
@@ -86,7 +89,7 @@ class AeonViewImages:
         destination_file = AeonViewHelpers.build_path(destination, file_name)
 
         if not destination.exists():
-            if self.args.get("simulate", False):
+            if getattr(self.args, "simulate", False):
                 logging.info("Simulate: would create %s", destination)
             else:
                 AeonViewHelpers.mkdir_p(destination)
@@ -116,7 +119,7 @@ class AeonViewImages:
         Download the image from the URL and save it to the project directory.
         """
 
-        date_param = self.args.get("date", None)
+        date_param = getattr(self.args, "date", None)
 
         if date_param is not None:
             try:
@@ -143,7 +146,7 @@ class AeonViewImages:
 
         logging.info("Saving image to %s", dest_file)
 
-        if not self.args.get("simulate", False):
+        if not self.simulate:
             AeonViewHelpers.mkdir_p(dest_dir)
             self.download_image(dest_file)
         else:
@@ -167,10 +170,7 @@ class AeonViewImages:
             logging.error("Invalid destination path.")
             sys.exit(1)
 
-        if (
-            self.args.get("simulate", False) is False
-            or self.args.get("simulate", None) is None
-        ):
+        if not getattr(self.args, "simulate", False):
             logging.info("Downloading image from %s", self.url)
             response = requests.get(self.url, stream=True, timeout=10)
             if response.status_code == 200:
@@ -210,14 +210,11 @@ class AeonViewVideos:
         self.project_path = project_path
         self.args = args
 
-        self.args["simulate"] = (
-            args.get("simulate", False) if isinstance(args, dict) else False
-        )
-        self.args["fps"] = args.get("fps", 10) if isinstance(args, dict) else 10
-
-        self.day = args.get("day", None) if args else None
-        self.month = args.get("month", None) if args else None
-        self.year = args.get("year", None) if args else None
+        self.simulate = getattr(args, "simulate", False)
+        self.fps = getattr(args, "fps", 10)
+        self.day = getattr(args, "day", None)
+        self.month = getattr(args, "month", None)
+        self.year = getattr(args, "year", None)
 
         self.path_images = AeonViewHelpers.build_path(self.project_path, "img")
         self.path_videos = AeonViewHelpers.build_path(self.project_path, "vid")
@@ -235,13 +232,13 @@ class AeonViewVideos:
         output_dir = AeonViewHelpers.build_path(self.path_videos, year_month)
         output_file = AeonViewHelpers.build_path(output_dir, f"{self.day}.mp4")
         ffmpeg_cmd = AeonViewHelpers.generate_ffmpeg_command(
-            input_dir, output_file, self.args.fps
+            input_dir, output_file, self.fps
         )
 
         logging.info("Generating video from %s", input_dir)
         logging.info("Output file will be %s", output_file)
 
-        if not self.args.get("simulate", False):
+        if not self.simulate:
             logging.info("Running ffmpeg command: %s", " ".join(ffmpeg_cmd))
             if not os.path.exists(input_dir):
                 AeonViewHelpers.mkdir_p(output_dir)
@@ -418,7 +415,15 @@ class AeonViewApp:
     """
 
     def __init__(self):
-        self.args, self.parser = AeonViewHelpers.parse_arguments()
+        args, parser = AeonViewHelpers.parse_arguments()
+        self.args: argparse.Namespace = args
+        self.parser: argparse.ArgumentParser = parser
+
+        if self.args is None:
+            logging.error("No arguments provided.")
+            self.parser.print_help()
+            sys.exit(1)
+
         AeonViewHelpers.setup_logger(self.args.verbose)
         self.base_path = Path(self.args.dest).resolve()
 
@@ -480,6 +485,8 @@ class AeonViewApp:
             logging.error("Project path %s does not exist.", project_path)
             sys.exit(1)
 
+        generate_date = None
+
         try:
             generate_date = (
                 datetime.strptime(self.args.generate, "%Y-%m-%d")
@@ -502,7 +509,9 @@ class AeonViewApp:
             logging.error("Invalid date: %s-%s-%s", year, month, day)
             sys.exit(1)
 
-        avm = AeonViewVideos(project_path, vars(self.args))
+        args: argparse.Namespace = self.args
+
+        avm = AeonViewVideos(project_path, args)
 
         if self.args.timeframe == "daily":
             avm.generate_daily_video()
