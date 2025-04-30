@@ -1,6 +1,7 @@
 # Contributing to aeonview
 
-Thanks for your interest in contributing to **aeonview**! This guide will help you get started.
+Thanks for your interest in contributing to **aeonview**!
+This guide will help you get started.
 
 ## 🛠 Project Setup
 
@@ -67,6 +68,7 @@ make lint     # check for lint errors
 Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 
 Examples:
+
 - `feat: add monthly video generation`
 - `fix: handle invalid date error`
 - `docs: update usage instructions`
@@ -76,10 +78,9 @@ Examples:
 We expect contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Questions?
+
 Feel free to open an issue or start a discussion!
 
 Thanks for helping make Aeonview better 💜
 
-<!--
-vim: ft=md sw=2 ts=2 tw=72 fo=cqt wm=0 et
--->
+<!-- vim: ft=md sw=2 ts=2 tw=72 fo=cqt wm=0 et :-->

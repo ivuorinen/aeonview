@@ -15,12 +15,14 @@ welcoming, diverse, inclusive, and healthy community.
 ## Our Standards
 
 Examples of behavior that contributes to a positive environment:
+
 - Demonstrating empathy and kindness
 - Being respectful of differing opinions
 - Gracefully accepting constructive feedback
 - Focusing on what is best for the community
 
 Examples of unacceptable behavior:
+
 - The use of sexualized language or imagery
 - Trolling, insulting or derogatory comments
 - Harassment of any kind
@@ -52,6 +54,4 @@ version 2.1.
 
 [cc]: https://www.contributor-covenant.org/version/2/1/code_of_conduct/
 
-<!--
-vim: ft=md sw=2 ts=2 tw=72 fo=cqt wm=0 et
--->
+<!-- vim: ft=md sw=2 ts=2 tw=72 fo=cqt wm=0 et : -->

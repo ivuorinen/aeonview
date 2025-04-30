@@ -45,7 +45,8 @@ def test_mkdir_p_creates_directory():
 
 @pytest.mark.parametrize("ext", ["jpg", "png", "gif", "webp"])
 def test_get_extension_valid(ext):
-    assert AeonViewHelpers.get_extension(f"{default_image_domain}.{ext}") == f".{ext}"
+    assert AeonViewHelpers.get_extension(
+        f"{default_image_domain}.{ext}") == f".{ext}"
 
 
 def test_get_extension_invalid():
@@ -93,20 +94,25 @@ def test_get_image_paths_valid():
     paths = aeon_view_images.get_image_paths(url, destination_base, date)
     assert paths["url"] == url
     assert paths["file"] == "12-30-45.jpg"
-    assert paths["destinations"]["file"] == destination_base / "2025-04" / "10" / "12-30-45.jpg"
+    assert paths["destinations"][
+               "file"] == destination_base / "2025-04" / "10" / "12-30-45.jpg"
 
 
 def test_get_image_paths_invalid_url():
     with pytest.raises(SystemExit), mock.patch("aeonview.logging.error") as log:
         aeon_view_images = AeonViewImages(default_test_path, "invalid-url")
-        aeon_view_images.get_image_paths("invalid-url", default_test_path, datetime(2025, 4, 10))
+        aeon_view_images.get_image_paths("invalid-url", default_test_path,
+                                         datetime(2025, 4, 10))
         assert AeonViewMessages.INVALID_URL in log.call_args[0][0]
 
 
 def test_get_image_paths_invalid_date():
     with pytest.raises(SystemExit), mock.patch("aeonview.logging.error") as log:
-        aeon_view_images = AeonViewImages(default_test_path, f"{default_image_domain}.jpg")
-        aeon_view_images.get_image_paths(f"{default_image_domain}.jpg", default_test_path, "invalid-date")  # pyright: ignore [reportArgumentType]
+        aeon_view_images = AeonViewImages(default_test_path,
+                                          f"{default_image_domain}.jpg")
+        aeon_view_images.get_image_paths(f"{default_image_domain}.jpg",
+                                         default_test_path,
+                                         "invalid-date")  # pyright: ignore [reportArgumentType]
         assert AeonViewMessages.INVALID_DATE in log.call_args[0][0]
 
 
@@ -132,7 +138,8 @@ def test_download_image_success(mock_get):
     with tempfile.NamedTemporaryFile(delete=True) as temp_file:
         destination = Path(temp_file.name)
         avi.download_image(destination)
-        mock_get.assert_called_once_with(f"{default_image_domain}.jpg", stream=True, timeout=10)
+        mock_get.assert_called_once_with(f"{default_image_domain}.jpg",
+                                         stream=True, timeout=10)
         assert destination.exists()
 
 
@@ -154,7 +161,8 @@ def test_download_image_failure(mock_get):
 @mock.patch("aeonview.AeonViewHelpers.mkdir_p")
 @mock.patch("subprocess.run")
 def test_generate_daily_video(mock_subprocess_run, mock_mkdir_p):
-    args = argparse.Namespace(simulate=False, fps=10, day="01", month="04", year="2025")
+    args = argparse.Namespace(simulate=False, fps=10, day="01", month="04",
+                              year="2025")
     avv = AeonViewVideos(default_test_path, args)
     with mock.patch("aeonview.logging.info") as log:
         avv.generate_daily_video()
@@ -169,27 +177,31 @@ def test_generate_daily_video(mock_subprocess_run, mock_mkdir_p):
 
 @mock.patch("aeonview.AeonViewHelpers.mkdir_p")
 def test_generate_daily_video_simulate(mock_mkdir_p):
-    args = argparse.Namespace(simulate=True, fps=10, day="01", month="04", year="2025")
+    args = argparse.Namespace(simulate=True, fps=10, day="01", month="04",
+                              year="2025")
     avv = AeonViewVideos(default_test_path, args)
     avv.generate_daily_video()
     mock_mkdir_p.assert_not_called()
 
 
 def test_generate_monthly_video_not_implemented():
-    args = argparse.Namespace(simulate=False, fps=10, day="01", month="04", year="2025")
+    args = argparse.Namespace(simulate=False, fps=10, day="01", month="04",
+                              year="2025")
     avv = AeonViewVideos(default_test_path, args)
     with pytest.raises(NotImplementedError):
         avv.generate_monthly_video(Path("/tmp"))
 
 
 def test_generate_yearly_video_not_implemented():
-    args = argparse.Namespace(simulate=False, fps=10, day="01", month="04", year="2025")
+    args = argparse.Namespace(simulate=False, fps=10, day="01", month="04",
+                              year="2025")
     avv = AeonViewVideos(default_test_path, args)
     with pytest.raises(NotImplementedError):
         avv.generate_yearly_video(Path("/tmp"))
 
 
-@mock.patch("sys.argv", ["aeonview.py", "--mode", "image", "--url", f"{default_image_domain}.jpg"])
+@mock.patch("sys.argv", ["aeonview.py", "--mode", "image", "--url",
+                         f"{default_image_domain}.jpg"])
 def test_parse_arguments_image_mode():
     args, _ = AeonViewHelpers.parse_arguments()
     assert args.mode == "image"
@@ -197,7 +209,8 @@ def test_parse_arguments_image_mode():
     assert args.dest == default_dest
 
 
-@mock.patch("sys.argv", ["aeonview.py", "--mode", "video", "--project", f"{default_project}"])
+@mock.patch("sys.argv", ["aeonview.py", "--mode", "video", "--project",
+                         f"{default_project}"])
 def test_parse_arguments_video_mode():
     args, _ = AeonViewHelpers.parse_arguments()
     assert args.mode == "video"
@@ -221,7 +234,8 @@ def test_parse_arguments_fps():
     assert args.fps == 30
 
 
-@mock.patch("sys.argv", ["aeonview.py", "--mode", "video", "--generate", "2023-10-01"])
+@mock.patch("sys.argv",
+            ["aeonview.py", "--mode", "video", "--generate", "2023-10-01"])
 def test_parse_arguments_generate_date():
     args, _ = AeonViewHelpers.parse_arguments()
     assert args.mode == "video"
@@ -253,12 +267,15 @@ def test_image_simulation(mock_download_image, mock_mkdir_p):
     args = mock.MagicMock()
     args.simulate = True
     args.date = "2025-04-10 12:30:45"
-    avi = AeonViewImages(default_test_path, f"{default_image_domain}.jpg", args)
+    avi = AeonViewImages(
+        default_test_path, f"{default_image_domain}.jpg", args)
     with mock.patch("aeonview.logging.info") as log:
         avi.get_current_image()
         mock_mkdir_p.assert_not_called()
         mock_download_image.assert_not_called()
-        assert any("Saving image to" in str(call) for call in log.call_args_list)
+        assert any(
+            "Saving image to" in str(call) for call in log.call_args_list
+        )
 
 
 @mock.patch("aeonview.AeonViewHelpers.mkdir_p")
@@ -275,16 +292,22 @@ def test_video_simulation(mock_subprocess_run, mock_mkdir_p):
         avv.generate_daily_video()
         mock_mkdir_p.assert_not_called()
         mock_subprocess_run.assert_not_called()
-        assert any("Generating video from" in str(call) for call in log.call_args_list)
+        assert any(
+            "Generating video from" in str(call) for call in log.call_args_list
+        )
 
 
 @mock.patch("logging.basicConfig")
 def test_setup_logger_verbose(mock_basic_config):
     AeonViewHelpers.setup_logger(verbose=True)
-    mock_basic_config.assert_called_once_with(level=logging.DEBUG, format="[%(levelname)s] %(message)s")
+    mock_basic_config.assert_called_once_with(
+        level=logging.DEBUG,
+        format="[%(levelname)s] %(message)s")
 
 
 @mock.patch("logging.basicConfig")
 def test_setup_logger_non_verbose(mock_basic_config):
     AeonViewHelpers.setup_logger(verbose=False)
-    mock_basic_config.assert_called_once_with(level=logging.INFO, format="[%(levelname)s] %(message)s")
+    mock_basic_config.assert_called_once_with(
+        level=logging.INFO,
+        format="[%(levelname)s] %(message)s")
