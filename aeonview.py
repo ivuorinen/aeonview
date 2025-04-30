@@ -365,12 +365,12 @@ class AeonViewHelpers:
 
         if url.endswith(".png"):
             return ".png"
-        elif url.endswith(".gif"):
+        if url.endswith(".gif"):
             return ".gif"
-        elif url.endswith(".webp"):
+        if url.endswith(".webp"):
             return ".webp"
-        else:
-            return ".jpg"
+
+        return ".jpg"
 
     @staticmethod
     def setup_logger(verbose: bool):

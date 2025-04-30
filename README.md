@@ -1,8 +1,8 @@
 ```markdown
-                               _)
-    _` |   -_)   _ \    \ \ \ / |   -_) \ \  \ /
-  \__,_| \___| \___/ _| _| \_/ _| \___|  \_/\_/
-        aeonview - a simple timelapse tool
+#                               _)
+#    _` |   -_)   _ \    \ \ \ / |   -_) \ \  \ /
+#  \__,_| \___| \___/ _| _| \_/ _| \___|  \_/\_/
+#        aeonview - a simple timelapse tool
 ```
 
 **aeonview** is a Python-based tool for generating timelapse videos

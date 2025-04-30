@@ -21,4 +21,4 @@ python_files = ["*_test.py"]
 ignore-patterns='^\.#'
 ignore-paths='^\.#'
 ignore='CVS,.venv'
-disable='attribute-defined-outside-init,invalid-name,missing-docstring,protected-access,too-few-public-methods,format'
+disable='attribute-defined-outside-init,invalid-name,missing-docstring,protected-access,too-many-instance-attributes,too-few-public-methods,format'
