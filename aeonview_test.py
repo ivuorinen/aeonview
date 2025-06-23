@@ -99,29 +99,29 @@ def test_get_image_paths_valid():
     assert paths["file"] == "12-30-45.jpg"
     assert paths["destinations"]["file"] == a_p
 
+
 def test_get_image_paths_invalid_url():
-    with pytest.raises(SystemExit), mock.patch("aeonview.logging.error") as log:
+    with pytest.raises(SystemExit), mock.patch("aeonview.logging.error"):
         aeon_view_images = AeonViewImages(default_test_path, "invalid-url")
         aeon_view_images.get_image_paths(
             "invalid-url",
             default_test_path,
             datetime(2025, 4, 10)
         )
-        assert AeonViewMessages.INVALID_URL in log.call_args[0][0]
 
 
 def test_get_image_paths_invalid_date():
-    with pytest.raises(SystemExit), mock.patch("aeonview.logging.error") as log:
+    with pytest.raises(SystemExit), mock.patch("aeonview.logging.error"):
         aeon_view_images = AeonViewImages(
             default_test_path,
             f"{default_image_domain}.jpg"
         )
+        # noinspection PyTypeChecker
         aeon_view_images.get_image_paths(
             f"{default_image_domain}.jpg",
             default_test_path,
-            "invalid-date" # pyright: ignore [reportArgumentType]
+            "invalid-date"  # pyright: ignore [reportArgumentType]
         )
-        assert AeonViewMessages.INVALID_DATE in log.call_args[0][0]
 
 
 @mock.patch("aeonview.AeonViewHelpers.mkdir_p")
@@ -164,9 +164,8 @@ def test_download_image_failure(mock_get):
     avi = AeonViewImages(default_test_path, f"{default_image_domain}.jpg", args)
     destination = Path("/tmp/image.jpg")
 
-    with pytest.raises(SystemExit), mock.patch("aeonview.logging.error") as log:
+    with pytest.raises(SystemExit), mock.patch("aeonview.logging.error"):
         avi.download_image(destination)
-        assert AeonViewMessages.DOWNLOAD_FAILURE in log.call_args[0][0]
 
 
 @mock.patch("aeonview.AeonViewHelpers.mkdir_p")
@@ -232,7 +231,7 @@ def test_generate_yearly_video_not_implemented():
 
 
 @mock.patch("sys.argv", ["aeonview.py", "--mode", "image", "--url",
-                            f"{default_image_domain}.jpg"])
+                         f"{default_image_domain}.jpg"])
 def test_parse_arguments_image_mode():
     args, _ = AeonViewHelpers.parse_arguments()
     assert args.mode == "image"
@@ -241,7 +240,7 @@ def test_parse_arguments_image_mode():
 
 
 @mock.patch("sys.argv", ["aeonview.py", "--mode", "video", "--project",
-                            f"{default_project}"])
+                         f"{default_project}"])
 def test_parse_arguments_video_mode():
     args, _ = AeonViewHelpers.parse_arguments()
     assert args.mode == "video"
