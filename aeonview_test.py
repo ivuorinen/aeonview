@@ -27,6 +27,12 @@ default_test_path = Path("/tmp/test_project").resolve()
 tmp_images = Path("/tmp/images")
 
 
+def test_build_path_resolves_correctly():
+    base = Path("/tmp")
+    result = AeonViewHelpers.build_path(base, "a", "b", "c")
+    assert result == Path("/tmp/a/b/c").resolve()
+
+
 def test_check_date_valid():
     assert AeonViewHelpers.check_date(2023, 12, 31)
 

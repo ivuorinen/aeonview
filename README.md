@@ -72,6 +72,9 @@ make lint
 
 # Run tests
 make test
+
+# Lint and test with pre-commit
+pre-commit run --files <changed files>
 ```
 
 ## System Setup for ffmpeg
