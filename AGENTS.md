@@ -2,7 +2,7 @@
 
 ## Development Workflow
 
-- Use **Python 3.11** as defined in `.python-version`.
+- Use **Python 3.13** as defined in `.python-version`.
 - Install dependencies from `requirements.txt` (virtualenv recommended).
 - Use **pre-commit** for linting and testing:
   - `pre-commit run --files <changed files>`
