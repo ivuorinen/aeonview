@@ -26,7 +26,7 @@ Low quality sample: [aeonview 2min preview/Tampere Jan. 2008][sample]
 
 ## Requirements
 
-- Python 3.11+
+- Python 3.13+
 - `ffmpeg` and `curl` (system tools)
 - lots of hard drive space
 - Optional: `pyenv` for managing Python versions

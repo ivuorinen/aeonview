@@ -23,14 +23,14 @@ default_timeframe = "daily"
 default_simulate = False
 default_verbose = False
 default_image_domain = "https://example.com/image"
-default_test_path = Path("/tmp/test_project").resolve()
-tmp_images = Path("/tmp/images")
+default_test_path = Path(tempfile.gettempdir(), "test_project").resolve()
+tmp_images = Path(tempfile.gettempdir(), "images")
 
 
 def test_build_path_resolves_correctly():
-    base = Path("/tmp")
+    base = Path(tempfile.gettempdir())
     result = AeonViewHelpers.build_path(base, "a", "b", "c")
-    assert result == Path("/tmp/a/b/c").resolve()
+    assert result == Path(base, "a", "b", "c").resolve()
 
 
 def test_check_date_valid():
@@ -62,7 +62,7 @@ def test_get_extension_invalid():
 
 def test_generate_ffmpeg_command():
     input_dir = tmp_images
-    output_file = Path("/tmp/output.mp4")
+    output_file = Path(tempfile.gettempdir(), "output.mp4")
     fps = 24
     cmd = AeonViewHelpers.generate_ffmpeg_command(input_dir, output_file, fps)
     assert "ffmpeg" in cmd[0]
@@ -73,10 +73,10 @@ def test_generate_ffmpeg_command():
 
 def test_generate_ffmpeg_command_output_format():
     input_dir = tmp_images
-    output_file = Path("/tmp/video.mp4")
+    output_file = Path(tempfile.gettempdir(), "video.mp4")
     cmd = AeonViewHelpers.generate_ffmpeg_command(input_dir, output_file, 30)
-    assert "/tmp/images/*.{jpg,jpeg,png,gif,webp}" in cmd
-    assert "/tmp/video.mp4" in cmd
+    assert str(tmp_images / "*.{jpg,jpeg,png,gif,webp}") in cmd
+    assert str(output_file) in cmd
     assert "-c:v" in cmd
     assert "libx264" in cmd
     assert "-pix_fmt" in cmd
@@ -86,7 +86,7 @@ def test_generate_ffmpeg_command_output_format():
 @mock.patch("subprocess.run")
 def test_simulate_ffmpeg_call(mock_run):
     input_dir = tmp_images
-    output_file = Path("/tmp/out.mp4")
+    output_file = Path(tempfile.gettempdir(), "out.mp4")
     cmd = AeonViewHelpers.generate_ffmpeg_command(input_dir, output_file, 10)
     subprocess.run(cmd, check=True)
     mock_run.assert_called_once_with(cmd, check=True)
@@ -168,7 +168,7 @@ def test_download_image_failure(mock_get):
 
     args = argparse.Namespace(simulate=False)
     avi = AeonViewImages(default_test_path, f"{default_image_domain}.jpg", args)
-    destination = Path("/tmp/image.jpg")
+    destination = Path(tempfile.gettempdir(), "image.jpg")
 
     with pytest.raises(SystemExit), mock.patch("aeonview.logging.error"):
         avi.download_image(destination)
@@ -220,7 +220,7 @@ def test_generate_monthly_video_not_implemented():
     )
     avv = AeonViewVideos(default_test_path, args)
     with pytest.raises(NotImplementedError):
-        avv.generate_monthly_video(Path("/tmp"))
+        avv.generate_monthly_video(Path(tempfile.gettempdir()))
 
 
 def test_generate_yearly_video_not_implemented():
@@ -233,7 +233,7 @@ def test_generate_yearly_video_not_implemented():
     )
     avv = AeonViewVideos(default_test_path, args)
     with pytest.raises(NotImplementedError):
-        avv.generate_yearly_video(Path("/tmp"))
+        avv.generate_yearly_video(Path(tempfile.gettempdir()))
 
 
 @mock.patch("sys.argv", ["aeonview.py", "--mode", "image", "--url",
