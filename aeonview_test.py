@@ -23,8 +23,8 @@ default_timeframe = "daily"
 default_simulate = False
 default_verbose = False
 default_image_domain = "https://example.com/image"
-default_test_path = Path("/tmp/test_project").resolve()
-tmp_images = Path("/tmp/images")
+default_test_path = Path(tempfile.gettempdir(), "test_project").resolve()
+tmp_images = Path(tempfile.gettempdir(), "images")
 
 
 def test_build_path_resolves_correctly():

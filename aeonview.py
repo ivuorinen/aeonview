@@ -227,7 +227,7 @@ class AeonViewVideos:
         year_month = f"{self.year}-{self.month}"
 
         input_dir = AeonViewHelpers.build_path(
-            self.path_videos, year_month, self.day
+            self.path_images, year_month, self.day
         )
         output_dir = AeonViewHelpers.build_path(self.path_videos, year_month)
         output_file = AeonViewHelpers.build_path(output_dir, f"{self.day}.mp4")
@@ -240,7 +240,7 @@ class AeonViewVideos:
 
         if not self.simulate:
             logging.info("Running ffmpeg command: %s", " ".join(ffmpeg_cmd))
-            if not os.path.exists(input_dir):
+            if not os.path.exists(output_dir):
                 AeonViewHelpers.mkdir_p(output_dir)
             subprocess.run(ffmpeg_cmd, check=True)
             logging.info(

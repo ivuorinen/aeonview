@@ -18,7 +18,7 @@ testpaths = ["."]
 python_files = ["*_test.py"]
 
 [tool.pylint.MAIN]
-ignore-patterns='^\.#'
-ignore-paths='^\.#'
-ignore='CVS,.venv'
-disable='attribute-defined-outside-init,invalid-name,missing-docstring,protected-access,too-many-instance-attributes,too-few-public-methods,format'
+ignore-patterns = ["^\\.#"]
+ignore-paths = ["^\\.#"]
+ignore = ["CVS", ".venv"]
+disable = 'attribute-defined-outside-init,invalid-name,missing-docstring,protected-access,too-many-instance-attributes,too-few-public-methods,format'
