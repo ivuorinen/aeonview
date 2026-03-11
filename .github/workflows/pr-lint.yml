@@ -1,5 +1,7 @@
 ---
+# yamllint disable rule:line-length
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# yamllint enable rule:line-length
 name: PR Lint
 
 # yamllint disable-line rule:truthy
@@ -20,10 +22,12 @@ jobs:
     name: PR Lint
     runs-on: ubuntu-latest
     permissions:
-      contents: write # only for delete-branch option
+      contents: write  # only for delete-branch option
       issues: write
       pull-requests: write
       statuses: write
 
     steps:
-      - uses: ivuorinen/actions/pr-lint@edb5db7b564801bc35bcd5b7667c185760d05fdd # 25.4.28
+      # yamllint disable rule:line-length
+      - uses: ivuorinen/actions/pr-lint@edb5db7b564801bc35bcd5b7667c185760d05fdd  # 25.4.28
+      # yamllint enable rule:line-length

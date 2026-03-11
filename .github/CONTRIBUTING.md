@@ -6,12 +6,14 @@ This guide will help you get started.
 ## 🛠 Project Setup
 
 1. Clone the repository:
+
     ```bash
     git clone https://github.com/your-username/aeonview.git
     cd aeonview
     ```
 
 2. Set up your environment:
+
     ```bash
     python3 -m venv venv
     source venv/bin/activate
@@ -19,6 +21,7 @@ This guide will help you get started.
     ```
 
 3. Install pre-commit hooks:
+
     ```bash
     pre-commit install
     ```
@@ -46,17 +49,20 @@ make lint     # check for lint errors
 ## ✅ Submitting a Pull Request
 
 1. Create a feature branch:
+
     ```bash
     git checkout -b feature/my-new-feature
     ```
 
 2. Commit your changes:
+
     ```bash
     git add .
     git commit -m "feat: add support for X"
     ```
 
 3. Push and open a pull request:
+
     ```bash
     git push origin feature/my-new-feature
     ```
