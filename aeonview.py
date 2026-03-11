@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import logging
-import os
 import subprocess
 import sys
 from datetime import datetime, timedelta
@@ -240,7 +239,10 @@ class AeonViewVideos:
 
         if not self.simulate:
             logging.info("Running ffmpeg command: %s", " ".join(ffmpeg_cmd))
-            if not os.path.exists(output_dir):
+            if not input_dir.exists():
+                logging.error("Input directory %s does not exist", input_dir)
+                sys.exit(1)
+            if not output_dir.exists():
                 AeonViewHelpers.mkdir_p(output_dir)
             subprocess.run(ffmpeg_cmd, check=True)
             logging.info(
@@ -481,7 +483,7 @@ class AeonViewApp:
             self.base_path, self.args.project
         )
 
-        if not os.path.exists(project_path):
+        if not project_path.exists():
             logging.error("Project path %s does not exist.", project_path)
             sys.exit(1)
 

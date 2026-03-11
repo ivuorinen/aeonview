@@ -174,25 +174,30 @@ def test_download_image_failure(mock_get):
         avi.download_image(destination)
 
 
-@mock.patch("aeonview.AeonViewHelpers.mkdir_p")
 @mock.patch("subprocess.run")
-def test_generate_daily_video(mock_subprocess_run, mock_mkdir_p):
-    args = argparse.Namespace(
-        simulate=False,
-        fps=10,
-        day="01",
-        month="04",
-        year="2025"
-    )
-    avv = AeonViewVideos(default_test_path, args)
-    with mock.patch("aeonview.logging.info") as log:
-        avv.generate_daily_video()
-        last_call_args = log.call_args_list[-1][0]
-        assert last_call_args[0] == "%s: %s"
-        assert last_call_args[1] == AeonViewMessages.VIDEO_GENERATION_SUCCESS
-        assert last_call_args[2] == default_test_path / "vid/2025-04/01.mp4"
-
-    mock_mkdir_p.assert_called()
+def test_generate_daily_video(mock_subprocess_run):
+    with tempfile.TemporaryDirectory() as tmp:
+        project_path = Path(tmp).resolve()
+        args = argparse.Namespace(
+            simulate=False,
+            fps=10,
+            day="01",
+            month="04",
+            year="2025"
+        )
+        avv = AeonViewVideos(project_path, args)
+        # Create input directory so the existence check passes
+        (project_path / "img" / "2025-04" / "01").mkdir(parents=True)
+        with mock.patch("aeonview.AeonViewHelpers.mkdir_p") as mock_mkdir_p:
+            with mock.patch("aeonview.logging.info") as log:
+                avv.generate_daily_video()
+                last_call_args = log.call_args_list[-1][0]
+                assert last_call_args[0] == "%s: %s"
+                assert last_call_args[1] == AeonViewMessages.VIDEO_GENERATION_SUCCESS
+                assert last_call_args[2] == (
+                    project_path / "vid" / "2025-04" / "01.mp4"
+                )
+            mock_mkdir_p.assert_called()
     mock_subprocess_run.assert_called()
 
 

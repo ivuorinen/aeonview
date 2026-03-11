@@ -8,7 +8,7 @@ This guide will help you get started.
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/aeonview.git
+    git clone https://github.com/ivuorinen/aeonview.git
     cd aeonview
     ```
 
@@ -17,7 +17,7 @@ This guide will help you get started.
     ```bash
     python3 -m venv venv
     source venv/bin/activate
-    pip install -r dev-requirements.txt
+    pip install -r requirements.txt
     ```
 
 3. Install pre-commit hooks:

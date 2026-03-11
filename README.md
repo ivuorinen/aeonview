@@ -14,14 +14,14 @@ Includes developer tooling and tests.
 
 [![CI][ci-b]][ci-l] [![ruff][cc-b]][cc-l] [![MIT][lm-b]][lm-l]
 
-Low quality sample: [aeonview 2min preview/Tampere Jan. 2008][sample]
+Low-quality sample: [aeonview 2min preview/Tampere Jan. 2008][sample]
 
 ## Features
 
 - Timelapse image capture (`--mode image`)
 - Video generation (`--mode video`)
 - Support for daily, monthly, yearly video runs *(daily implemented)*
-- Uses `ffmpeg` and `curl`
+- Uses `ffmpeg` and Python `requests`
 - Fully tested with `pytest`
 - Linting and formatting via `ruff`
 - Pre-commit hooks and CI-ready
@@ -29,10 +29,9 @@ Low quality sample: [aeonview 2min preview/Tampere Jan. 2008][sample]
 ## Requirements
 
 - Python 3.13+
-- `ffmpeg` and `curl` (system tools)
+- `ffmpeg` (system tool)
 - lots of hard drive space
 - Optional: `pyenv` for managing Python versions
-  (see `pyenv_requirements`)
 
 ## Installation
 
