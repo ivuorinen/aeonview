@@ -365,11 +365,14 @@ class AeonViewHelpers:
             logging.error(AeonViewMessages.INVALID_IMAGE_EXTENSION)
             return None
 
-        if url.endswith(".png"):
+        url_lower = url.lower()
+        if url_lower.endswith(".jpeg"):
+            return ".jpeg"
+        if url_lower.endswith(".png"):
             return ".png"
-        if url.endswith(".gif"):
+        if url_lower.endswith(".gif"):
             return ".gif"
-        if url.endswith(".webp"):
+        if url_lower.endswith(".webp"):
             return ".webp"
 
         return ".jpg"
@@ -397,6 +400,7 @@ class AeonViewHelpers:
         """
         return [
             "ffmpeg",
+            "-y",
             "-framerate",
             str(fps),
             "-pattern_type",

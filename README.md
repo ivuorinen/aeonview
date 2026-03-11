@@ -82,7 +82,7 @@ pre-commit run --files <changed files>
 
 ```bash
 sudo apt update
-sudo apt install ffmpeg curl
+sudo apt install ffmpeg
 ```
 
 ## License
