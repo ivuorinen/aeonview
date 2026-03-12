@@ -30,8 +30,8 @@ Low-quality sample: [aeonview 2min preview/Tampere Jan. 2008][sample]
 
 - Python 3.13+
 - `ffmpeg` (system tool)
+- [uv](https://docs.astral.sh/uv/) for dependency management
 - lots of hard drive space
-- Optional: `pyenv` for managing Python versions
 
 ## Installation
 
@@ -40,26 +40,24 @@ Low-quality sample: [aeonview 2min preview/Tampere Jan. 2008][sample]
 git clone https://github.com/ivuorinen/aeonview.git
 cd aeonview
 
-# Install dependencies
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+# Install dependencies (creates .venv automatically)
+uv sync --all-groups
 
 # Install pre-commit hooks
-pre-commit install
+uv run pre-commit install
 ```
 
 ## Usage
 
 ```bash
 # Capture an image
-python aeonview.py \
+uv run python aeonview.py \
   --mode image \
   --project example \
   --url "https://example.com/webcam.jpg"
 
 # Generate a video from yesterday's images
-python aeonview.py --mode video --project example
+uv run python aeonview.py --mode video --project example
 ```
 
 ## Development
@@ -75,7 +73,7 @@ make lint
 make test
 
 # Lint and test with pre-commit
-pre-commit run --files <changed files>
+uv run pre-commit run --files <changed files>
 ```
 
 ## System Setup for ffmpeg

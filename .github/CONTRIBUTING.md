@@ -15,15 +15,13 @@ This guide will help you get started.
 2. Set up your environment:
 
     ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
+    uv sync --all-groups
     ```
 
 3. Install pre-commit hooks:
 
     ```bash
-    pre-commit install
+    uv run pre-commit install
     ```
 
 ## ✅ Development Workflow
