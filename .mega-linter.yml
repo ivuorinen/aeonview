@@ -1,0 +1,9 @@
+---
+# MegaLinter configuration
+# https://megalinter.io/latest/configuration/
+
+# Install Python dependencies before linting so pylint and pyright
+# can resolve imports from requirements.txt (e.g. pytest, requests)
+PRE_COMMANDS:
+  - command: pip install -r requirements.txt
+    cwd: workspace
