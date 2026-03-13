@@ -32,4 +32,7 @@ PRE_COMMANDS:
   - command: uv sync --all-groups
     cwd: workspace
 
+PYTHON_PYLINT_CONFIG_FILE: pyproject.toml
+PYTHON_PYRIGHT_CONFIG_FILE: pyproject.toml
+
 FILTER_REGEX_EXCLUDE: (node_modules|\.venv|docs/)

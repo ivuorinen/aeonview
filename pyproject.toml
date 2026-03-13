@@ -40,6 +40,8 @@ python_files = ["*_test.py"]
 [tool.pyright]
 pythonVersion = "3.13"
 typeCheckingMode = "basic"
+venvPath = "."
+venv = ".venv"
 
 [tool.pylint.MAIN]
 ignore-patterns = ["^\\.#"]
@@ -64,4 +66,5 @@ disable = [
   "unnecessary-comprehension",
   "use-a-generator",
   "consider-using-with",
+  "import-error",
 ]
