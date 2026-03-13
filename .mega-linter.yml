@@ -7,8 +7,9 @@ DISABLE_LINTERS:
   - PYTHON_PYLINT
   - PYTHON_PYRIGHT
 
-# Install Python dependencies before linting so linters
-# can resolve imports from requirements.txt (e.g. pytest, requests)
+# Install Python dependencies before linting using uv
 PRE_COMMANDS:
-  - command: pip install -r requirements.txt
+  - command: pip install uv
+    cwd: workspace
+  - command: uv sync --all-groups
     cwd: workspace
