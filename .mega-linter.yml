@@ -1,11 +1,27 @@
 ---
-# MegaLinter configuration
-# https://megalinter.io/latest/configuration/
+# Configuration file for MegaLinter
+# See all available variables at
+# https://megalinter.io/configuration/ and in linters documentation
+
+APPLY_FIXES: all
+SHOW_ELAPSED_TIME: false # Show elapsed time at the end of MegaLinter run
+PARALLEL: true
+VALIDATE_ALL_CODEBASE: true
+FILEIO_REPORTER: false # Generate file.io report
+GITHUB_STATUS_REPORTER: true # Generate GitHub status report
+IGNORE_GENERATED_FILES: true # Ignore generated files
+JAVASCRIPT_DEFAULT_STYLE: prettier # Default style for JavaScript
+PRINT_ALPACA: false # Print Alpaca logo in console
+SARIF_REPORTER: true # Generate SARIF report
+SHOW_SKIPPED_LINTERS: false # Show skipped linters in MegaLinter log
 
 # Disable linters that are replaced by uv-based workflows
 DISABLE_LINTERS:
+  - PYTHON_BANDIT
   - PYTHON_PYLINT
   - PYTHON_PYRIGHT
+  - REPOSITORY_DEVSKIM
+  - REPOSITORY_DUSTILOCK
 
 # Install Python dependencies before linting using uv
 PRE_COMMANDS:
@@ -13,3 +29,5 @@ PRE_COMMANDS:
     cwd: workspace
   - command: uv sync --all-groups
     cwd: workspace
+
+FILTER_REGEX_EXCLUDE: (node_modules|\.venv|docs/)
