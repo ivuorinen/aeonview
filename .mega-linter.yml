@@ -17,11 +17,15 @@ SHOW_SKIPPED_LINTERS: false # Show skipped linters in MegaLinter log
 
 # Disable linters that are replaced by uv-based workflows
 DISABLE_LINTERS:
+  - JSON_PRETTIER
   - PYTHON_BANDIT
+  - PYTHON_BLACK
+  - PYTHON_ISORT
   - PYTHON_PYLINT
   - PYTHON_PYRIGHT
   - REPOSITORY_DEVSKIM
   - REPOSITORY_DUSTILOCK
+  - YAML_PRETTIER
 
 # Install Python dependencies before linting using uv
 PRE_COMMANDS:
