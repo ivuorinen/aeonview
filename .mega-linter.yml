@@ -2,6 +2,11 @@
 # MegaLinter configuration
 # https://megalinter.io/latest/configuration/
 
+# Disable linters that are replaced by uv-based workflows
+DISABLE_LINTERS:
+  - PYTHON_PYLINT
+  - PYTHON_PYRIGHT
+
 # Install Python dependencies before linting so pylint and pyright
 # can resolve imports from requirements.txt (e.g. pytest, requests)
 PRE_COMMANDS:
