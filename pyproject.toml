@@ -11,6 +11,8 @@ dependencies = ["requests>=2.32.3"]
 [dependency-groups]
 dev = [
   "pre-commit>=3.5.0",
+  "pylint>=3.0.0",
+  "pyright>=1.1.0",
   "pytest>=8.0.0",
   "pytest-cov>=4.1.0",
   "ruff>=0.3.3",
@@ -35,8 +37,31 @@ indent-style = "space"
 testpaths = ["."]
 python_files = ["*_test.py"]
 
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "basic"
+
 [tool.pylint.MAIN]
 ignore-patterns = ["^\\.#"]
 ignore-paths = ["^\\.#"]
 ignore = ["CVS", ".venv"]
-disable = 'attribute-defined-outside-init,invalid-name,missing-docstring,protected-access,too-many-instance-attributes,too-few-public-methods,format'
+
+[tool.pylint."messages_control"]
+disable = [
+  "attribute-defined-outside-init",
+  "invalid-name",
+  "missing-docstring",
+  "protected-access",
+  "too-many-instance-attributes",
+  "too-few-public-methods",
+  "format",
+  "line-too-long",
+  "ungrouped-imports",
+  "wrong-import-order",
+  "unused-import",
+  "reimported",
+  "consider-using-f-string",
+  "unnecessary-comprehension",
+  "use-a-generator",
+  "consider-using-with",
+]

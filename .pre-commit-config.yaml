@@ -1,18 +1,18 @@
 ---
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
+    rev: v3.21.2
     hooks:
       - id: pyupgrade
         args: [--py3-plus]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.11.5"
+    rev: "v0.15.6"
     hooks:
       - id: ruff
         args: ["--fix"]
       - id: ruff-format
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-ast
       - id: check-builtin-literals
@@ -25,7 +25,6 @@ repos:
       - id: check-yaml
       - id: debug-statements
       - id: detect-aws-credentials
-      - id: double-quote-string-fixer
       - id: end-of-file-fixer
       - id: mixed-line-ending
       - id: name-tests-test
@@ -33,6 +32,18 @@ repos:
       - id: trailing-whitespace
   - repo: local
     hooks:
+      - id: pyright
+        name: pyright
+        entry: uv run pyright
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+      - id: pylint
+        name: pylint
+        entry: uv run pylint
+        language: system
+        types: [python]
       - id: pytest
         name: pytest
         entry: uv run pytest
