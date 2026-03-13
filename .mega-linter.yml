@@ -7,7 +7,7 @@ DISABLE_LINTERS:
   - PYTHON_PYLINT
   - PYTHON_PYRIGHT
 
-# Install Python dependencies before linting so pylint and pyright
+# Install Python dependencies before linting so linters
 # can resolve imports from requirements.txt (e.g. pytest, requests)
 PRE_COMMANDS:
   - command: pip install -r requirements.txt
