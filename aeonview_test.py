@@ -47,13 +47,13 @@ def make_video_args(
 
 @contextlib.contextmanager
 def expect_error_exit():
-    """Context manager that expects ``SystemExit`` and silences ``logging.error``."""
+    """Expect ``SystemExit`` and silence ``logging.error``."""
     with pytest.raises(SystemExit), mock.patch("aeonview.logging.error"):
         yield
 
 
 def make_app_with_project(tmp: str) -> tuple[AeonViewApp, Path]:
-    """Create an ``AeonViewApp`` whose base_path points at *tmp* with a 'proj' dir."""
+    """Create an ``AeonViewApp`` with base_path at *tmp*/'proj'."""
     app = AeonViewApp()
     app.base_path = Path(tmp).resolve()
     proj_path = app.base_path / "proj"
@@ -456,7 +456,7 @@ def test_generate_monthly_video(mock_subprocess_run):
 
 @mock.patch("subprocess.run")
 def test_generate_monthly_video_excludes_output_file(mock_subprocess_run):
-    """Verify that the monthly output file is excluded from the input list on re-runs."""
+    """Verify monthly output file is excluded from inputs on re-runs."""
     captured_content = {}
 
     def capture_concat(cmd, **_kwargs):

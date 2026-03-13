@@ -317,11 +317,12 @@ class AeonViewVideos:
     def _concatenate_videos(
         self, label: str, input_videos: list[Path], output_file: Path
     ) -> None:
-        """Concatenate multiple video files into one using ffmpeg concat demuxer.
+        """Concatenate video files into one using ffmpeg concat.
 
-        :param label: Human-readable label for log messages (e.g. "monthly video for 2025-04").
-        :param input_videos: List of input video file paths to concatenate.
-        :param output_file: Path for the resulting concatenated video.
+        :param label: Human-readable label for log messages
+            (e.g. "monthly video for 2025-04").
+        :param input_videos: Paths of input videos to concatenate.
+        :param output_file: Path for the resulting video.
         """
         logging.info("Generating %s", label)
         logging.info("Output file will be %s", output_file)
@@ -350,7 +351,7 @@ class AeonViewVideos:
 
 
 class AeonViewHelpers:
-    """Utility methods for path manipulation, argument parsing, and ffmpeg commands."""
+    """Utility methods for paths, argument parsing, and ffmpeg."""
 
     @staticmethod
     def check_date(year: int, month: int, day: int) -> bool:
@@ -501,7 +502,7 @@ class AeonViewHelpers:
 
         :param input_files: List of input video file paths.
         :param output_file: Path to the output video file.
-        :return: Tuple of (ffmpeg command list, temporary concat list file path).
+        :return: Tuple of (command list, temp concat file path).
         """
         concat_list = tempfile.NamedTemporaryFile(
             mode="w", suffix=".txt", delete=False
