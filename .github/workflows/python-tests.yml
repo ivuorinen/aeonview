@@ -1,0 +1,39 @@
+---
+name: Python tests
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions: read-all
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        # yamllint disable-line rule:line-length
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Install uv
+        # yamllint disable-line rule:line-length
+        uses: astral-sh/setup-uv@e06108dd0aef18192324c70427afc47652e63a82  # v7.5.0
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        shell: bash
+        run: uv sync --all-groups
+
+      - name: Run Ruff linting
+        shell: bash
+        run: uv run ruff check .
+
+      - name: Run tests with coverage
+        shell: bash
+        run: |
+          uv run pytest --cov=aeonview --cov-report=term-missing

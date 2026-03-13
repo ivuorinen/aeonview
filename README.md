@@ -1,20 +1,98 @@
-	                              _)                
-	   _` |   -_)   _ \    \ \ \ / |   -_) \ \  \ / 
-	 \__,_| \___| \___/ _| _| \_/ _| \___|  \_/\_/  
-	  aeonview - a simple timelapse tool
+# aeonview
 
-aeonview is a tool for automagical timelapse-video generation. 
-it works as a glue between different linux programs to produce
-videos of elapsing time. works best with webcam-images from the net.
+```markdown
+#                               _)
+#    _` |   -_)   _ \    \ \ \ / |   -_) \ \  \ /
+#  \__,_| \___| \___/ _| _| \_/ _| \___|  \_/\_/
+#        aeonview - a simple timelapse tool
+```
 
-sample:
-	http://www.youtube.com/watch?v=SnywvnjHpUk
+**aeonview** is a Python-based tool for generating timelapse videos
+from webcam images using `ffmpeg`. It supports automated image
+downloading, video stitching, and is fully scriptable via CLI.
+Includes developer tooling and tests.
 
+[![CI][ci-b]][ci-l] [![ruff][cc-b]][cc-l] [![MIT][lm-b]][lm-l]
 
-Needed components:
+Low-quality sample: [aeonview 2min preview/Tampere Jan. 2008][sample]
 
-*   Python
-*   curl
-*   mencoder
-*   lots of harddrive space
-*   cron
+## Features
+
+- Timelapse image capture (`--mode image`)
+- Video generation (`--mode video`)
+- Support for daily, monthly, yearly video runs *(daily implemented)*
+- Uses `ffmpeg` and Python `requests`
+- Fully tested with `pytest`
+- Linting and formatting via `ruff`
+- Pre-commit hooks and CI-ready
+
+## Requirements
+
+- Python 3.13+
+- `ffmpeg` (system tool)
+- [uv](https://docs.astral.sh/uv/) for dependency management
+- lots of hard drive space
+
+## Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/ivuorinen/aeonview.git
+cd aeonview
+
+# Install dependencies (creates .venv automatically)
+uv sync --all-groups
+
+# Install pre-commit hooks
+uv run pre-commit install
+```
+
+## Usage
+
+```bash
+# Capture an image
+uv run python aeonview.py \
+  --mode image \
+  --project example \
+  --url "https://example.com/webcam.jpg"
+
+# Generate a video from yesterday's images
+uv run python aeonview.py --mode video --project example
+```
+
+## Development
+
+```bash
+# Format code
+make format
+
+# Lint code
+make lint
+
+# Run tests
+make test
+
+# Lint and test with pre-commit
+uv run pre-commit run --files <changed files>
+```
+
+## System Setup for ffmpeg
+
+```bash
+sudo apt update
+sudo apt install ffmpeg
+```
+
+## License
+
+MIT License © 2025 Ismo Vuorinen
+
+[ci-b]: https://github.com/ivuorinen/aeonview/actions/workflows/python-tests.yml/badge.svg
+[ci-l]: https://github.com/ivuorinen/aeonview/actions/workflows/python-tests.yml
+[cc-b]: https://img.shields.io/badge/code%20style-ruff-blueviolet
+[cc-l]: https://github.com/astral-sh/ruff
+[lm-b]: https://img.shields.io/badge/License-MIT-yellow.svg
+[lm-l]: https://opensource.org/licenses/MIT
+[sample]: https://www.youtube.com/watch?v=SnywvnjHpUk
+
+<!-- vim: set sw=2 ts=2 tw=72 fo=cqt wm=0 et: -->

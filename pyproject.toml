@@ -1,0 +1,70 @@
+[project]
+name = "aeonview"
+version = "0.1.0"
+description = "A simple timelapse tool using ffmpeg and Python"
+readme = "README.md"
+requires-python = ">=3.13.2"
+license = { text = "MIT" }
+authors = [{ name = "Ismo Vuorinen" }]
+dependencies = ["requests>=2.32.3"]
+
+[dependency-groups]
+dev = [
+  "pre-commit>=3.5.0",
+  "pylint>=3.0.0",
+  "pyright>=1.1.0",
+  "pytest>=8.0.0",
+  "pytest-cov>=4.1.0",
+  "ruff>=0.3.3",
+]
+
+[tool.ruff]
+line-length = 80
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "C4", "T20"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"*_test.py" = ["S101"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["."]
+python_files = ["*_test.py"]
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "basic"
+venvPath = "."
+venv = ".venv"
+
+[tool.pylint.MAIN]
+ignore-patterns = ["^\\.#"]
+ignore-paths = ["^\\.#"]
+ignore = ["CVS", ".venv"]
+
+[tool.pylint."messages_control"]
+disable = [
+  "attribute-defined-outside-init",
+  "invalid-name",
+  "missing-docstring",
+  "protected-access",
+  "too-many-instance-attributes",
+  "too-few-public-methods",
+  "format",
+  "line-too-long",
+  "ungrouped-imports",
+  "wrong-import-order",
+  "unused-import",
+  "reimported",
+  "consider-using-f-string",
+  "unnecessary-comprehension",
+  "use-a-generator",
+  "consider-using-with",
+  "import-error",
+]
