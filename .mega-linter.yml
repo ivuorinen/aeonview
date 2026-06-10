@@ -25,6 +25,9 @@ DISABLE_LINTERS:
   - REPOSITORY_DUSTILOCK
   - YAML_PRETTIER
 
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
+
 # Install Python dependencies before linting using uv
 PRE_COMMANDS:
   - command: pip install uv

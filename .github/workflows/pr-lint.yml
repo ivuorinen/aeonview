@@ -22,12 +22,14 @@ jobs:
     name: PR Lint
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # only for delete-branch option
+      contents: write # only for delete-branch option
       issues: write
       pull-requests: write
       statuses: write
 
     steps:
       # yamllint disable rule:line-length
-      - uses: ivuorinen/actions/pr-lint@f2d15a840e8888ba4f0c348ea70b6522cf2dc541  # v2026.04.15
+      - uses: ivuorinen/actions/pr-lint@877acc6d8b013051a6acf83c0e876d3a2b46210a # v2026.06.08
+        with:
+          token: ${{ github.token }}
       # yamllint enable rule:line-length
